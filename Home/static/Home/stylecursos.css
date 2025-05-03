@@ -1,0 +1,94 @@
+/* Definindo o estilo da página */
+body {
+    font-family: 'Lalezar', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #0f092dFF;
+    color: #ffffff;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;  /* Garante que a página ocupe toda a altura da tela */
+}
+
+/* Container principal */
+.container {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    flex-grow: 1;  /* Garante que a área principal cresça para ocupar o espaço restante */
+}
+
+/* Cabeçalho */
+header {
+    background-color: #000000;
+    width: 100%;
+    padding: 10px 0;
+    text-align: center;
+}
+
+header h1 {
+    font-size: 36px;
+    color: #fff;
+    margin: 0;
+}
+
+/* Linkagem dos cursos */
+.courses {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 30px;
+    padding: 20px 0;
+}
+
+.course {
+    background-color: #283593;
+    border-radius: 10px;
+    width: 300px;
+    height: 100px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+.course a {
+    font-size: 20px;
+    color: #fff;
+    text-decoration: none;
+    text-transform: uppercase;
+}
+
+.course a:hover {
+    color: #f44336;
+    font-weight: bold;
+}
+
+/* Rodapé fixo ao final */
+footer {
+    background-color: #000000;
+    width: 100%;
+    padding: 10px 0;
+    text-align: center;
+    margin-top: auto;  /* Faz com que o rodapé vá para o final */
+}
+
+footer p {
+    color: #fff;
+    font-size: 16px;
+}
+
+/* Responsividade */
+@media screen and (max-width: 768px) {
+    .courses {
+        flex-direction: column;
+    }
+
+    .course {
+        width: 80%;
+        margin: 10px auto;
+    }
+}
