@@ -46,3 +46,43 @@ def portugues8(request):
 
 def portugues9(request):
     return render(request, 'Home/portugues/9portugues.html')
+
+
+def historia(request):
+    return render(request, 'Home/historia.html')
+
+
+def historia6(request):
+    return render(request, 'Home/historia/6historia.html')
+
+
+def historia7(request):
+    return render(request, 'Home/historia/7historia.html')
+
+
+def historia8(request):
+    return render(request, 'Home/historia/8historia.html')
+
+
+def historia9(request):
+    return render(request, 'Home/historia/9historia.html')
+
+
+def geografia(request):
+    return render(request, 'Home/geografia.html')
+
+
+def geografia6(request):
+    return render(request, 'Home/geografia/6geografia.html')
+
+
+def geografia7(request):
+    return render(request, 'Home/geografia/7geografia.html')
+
+
+def geografia8(request):
+    return render(request, 'Home/geografia/8geografia.html')
+
+
+def geografia9(request):
+    return render(request, 'Home/geografia/9geografia.html')

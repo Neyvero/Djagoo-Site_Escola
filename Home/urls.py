@@ -21,4 +21,16 @@ urlpatterns = [
     path('portugues/7portugues', views.portugues7, name='7portugues'),
     path('portugues/8portugues', views.portugues8, name='8portugues'),
     path('portugues/9portugues', views.portugues9, name='9portugues'),
+    # Rota para a página de Geografia
+    path('geografia/', views.geografia, name='geografia'),
+    path('geografia/6geografia', views.geografia6, name='6geografia'),
+    path('geografia/7geografia', views.geografia7, name='7geografia'),
+    path('geografia/8geografia', views.geografia8, name='8geografia'),
+    path('geografia/9geografia', views.geografia9, name='9geografia'),
+    # Rota para a página de História
+    path('historia/', views.historia, name='historia'),
+    path('historia/6historia', views.historia6, name='6historia'),
+    path('historia/7historia', views.historia7, name='7historia'),
+    path('historia/8historia', views.historia8, name='8historia'),
+    path('historia/9historia', views.historia9, name='9historia'),
 ]
