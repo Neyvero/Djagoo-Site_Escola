@@ -33,4 +33,6 @@ urlpatterns = [
     path('historia/7historia', views.historia7, name='7historia'),
     path('historia/8historia', views.historia8, name='8historia'),
     path('historia/9historia', views.historia9, name='9historia'),
+    # Rota para os quizes
+    path('api/get-quiz/', views.get_quiz, name="get_quiz"),
 ]
