@@ -8,7 +8,7 @@ admin.site.register(Category)
 
 
 class AnswerAdmin(admin.StackedInline):
-    model = Anwser
+    model = Answer
 
 
 class QuestionAdmin(admin.ModelAdmin):
@@ -16,4 +16,4 @@ class QuestionAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Question, QuestionAdmin)
-admin.site.register(Anwser)
+admin.site.register(Answer)

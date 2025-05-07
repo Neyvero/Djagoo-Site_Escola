@@ -26,57 +26,98 @@
     <!-- Caixa de Texto de Introdução -->
     <div class="container">
         <section class="main-content">
-            <h2>7° Ano</h2>
+            <h2>6° Ano</h2>
             
         </section>
     </div>
-
+      
     <!-- Seção de Quizzes -->
-    <div class="quiz-container">
-        <h3>Quiz 1: Conhecimentos Gerais</h3>
-        <form class="quiz-form">
-            <div class="quiz-question">
-                <p>1. Qual é a capital do Brasil?</p>
-                <label>
-                    <input type="radio" name="q1" value="a"> São Paulo
-                </label>
-                <label>
-                    <input type="radio" name="q1" value="b"> Brasília
-                </label>
-                <label>
-                    <input type="radio" name="q1" value="c"> Rio de Janeiro
-                </label>
-            </div>
+    <div id="app">
+        <div class="container mt-5 pt-5">
+            <div class="col-mod-6 mx-auto">
+                <h3>Give quiz</h3>
+                <div v-for="(question, index) in questions" :key="index">
+                    <hr>
+                    <p>[[ question.question ]]</p>  <!-- Exibe a pergunta -->
+                    <div v-if="question.answers.length > 0" v-for="(answer, index) in question.answers" :key="index" class="form-check">
+                      <input @change="checkAnswer($event, question.uid)" :value="answer.answer" class="form-check-input" type="radio" :name="'question-' + question.id" :id="'answer-' + index">
+                      <label class="form-check-label" :for="'answer-' + index">
+                        [[ answer.answer ]]
+                      </label>
 
-            <div class="quiz-question">
-                <p>2. Quem escreveu "Dom Casmurro"?</p>
-                <label>
-                    <input type="radio" name="q2" value="a"> Machado de Assis
-                </label>
-                <label>
-                    <input type="radio" name="q2" value="b"> José de Alencar
-                </label>
-                <label>
-                    <input type="radio" name="q2" value="c"> Clarice Lispector
-                </label>
+                    </div>
+                    <p v-else>Não há opções de resposta para esta questão.</p>  <!-- Mensagem para questões sem respostas -->
+                    <hr>
+                  </div>
             </div>
-
-            <div class="quiz-question">
-                <p>3. Qual é a fórmula da água?</p>
-                <label>
-                    <input type="radio" name="q3" value="a"> H2O
-                </label>
-                <label>
-                    <input type="radio" name="q3" value="b"> CO2
-                </label>
-                <label>
-                    <input type="radio" name="q3" value="c"> H2O2
-                </label>
-            </div>
-
-            <button type="submit" class="submit-btn">Enviar Respostas</button>
-        </form>
+        </div>
     </div>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
+
+    <script>
+        var app = new Vue ({
+        el: '#app',
+        delimiters: ['[[', ']]'],
+        data() {
+          return {
+            category: "Geografia7",
+            questions : []
+          }
+        },
+        methods :{
+            getQuestions() {
+                if (!this.category) {
+                    alert("Escolha uma categoria!");
+                    return;
+                }
+
+                fetch(`/Home/api/get-quiz/?category=${encodeURIComponent(this.category)}`)
+                    .then(response => response.json())
+                    .then(result => {
+                    console.log("Resultado do quiz:", result);  // Exibe o resultado da API no console
+                    if (result && result.data) {
+                        this.questions = result.data;  // Atualiza as questões
+                        console.log("Questões:", this.questions);  // Verifique se 'questions' está sendo atualizado corretamente
+                    } else {
+                        console.error("Erro: Dados não encontrados na resposta da API.");
+                    }
+                    })
+
+                    .catch(error => {
+                    console.error("Erro no fetch:", error);
+                    });
+                },
+                checkAnswer(event, uid) {
+
+                    const question = this.questions.find(q => q.uid === uid);
+
+                    if (question) {
+               
+                        question.answers.forEach(answer => {
+                       
+                            if (answer.answer === event.target.value) {
+                                if (answer.is_correct) {
+                                    console.log('Your answer is correct');
+                                    alert("Sua resposta está correta!");
+                                } else {
+                                    console.log('Your answer is wrong');
+                                    alert("Sua resposta está errada!");
+                                }
+                            }
+                        });
+                    }
+                    console.log(event.target.value, uid); 
+                }
+
+        },
+
+
+        created() {
+          this.getQuestions()
+          console.log('Page Loaded')
+        },
+      });
+    </script>
 
     <!-- Rodapé -->
     <footer class="footer">

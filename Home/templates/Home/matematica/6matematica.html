@@ -27,56 +27,101 @@
     <div class="container">
         <section class="main-content">
             <h2>6° Ano</h2>
-            
         </section>
     </div>
-
+      
     <!-- Seção de Quizzes -->
-    <div class="quiz-container">
-        <h3>Quiz 1: Conhecimentos Gerais</h3>
-        <form class="quiz-form">
-            <div class="quiz-question">
-                <p>1. Qual é a capital do Brasil?</p>
-                <label>
-                    <input type="radio" name="q1" value="a"> São Paulo
-                </label>
-                <label>
-                    <input type="radio" name="q1" value="b"> Brasília
-                </label>
-                <label>
-                    <input type="radio" name="q1" value="c"> Rio de Janeiro
-                </label>
+    <div id="app">
+        <div class="container mt-5 pt-5">
+            <div class="col-mod-6 mx-auto">
+                <h3>Give quiz</h3>
+                <div v-for="(question, qIdx) in questions" :key="question.uid">
+                    <hr>
+                    <p>[[ question.question ]]</p>  <!-- Exibe a pergunta -->
+                    <div v-for="(answer, aIdx) in question.answers" :key="aIdx" class="form-check">
+                      <input
+                      @change="checkAnswer($event, question.uid)"
+                      :value="answer.answer"
+                      class="form-check-input"
+                      type="radio"
+                      :name="'question-' + question.uid"            
+                      :id="'answer-' + question.uid + '-' + aIdx" 
+                    />
+                    <label
+                    class="form-check-label"
+                    :for="'answer-' + question.uid + '-' + aIdx"
+                    >
+                        [[ answer.answer ]]
+                      </label>
+                    </div>
+                    <hr>
+                </div>
+                <!-- Botão para enviar e mostrar os acertos -->
+                <button class="btn" @click="submitQuiz">Enviar</button>
+                <p v-if="result !== null">Você acertou [[ result ]] de [[ questions.length ]] questões!</p> <!-- Exibe o resultado -->
             </div>
-
-            <div class="quiz-question">
-                <p>2. Quem escreveu "Dom Casmurro"?</p>
-                <label>
-                    <input type="radio" name="q2" value="a"> Machado de Assis
-                </label>
-                <label>
-                    <input type="radio" name="q2" value="b"> José de Alencar
-                </label>
-                <label>
-                    <input type="radio" name="q2" value="c"> Clarice Lispector
-                </label>
-            </div>
-
-            <div class="quiz-question">
-                <p>3. Qual é a fórmula da água?</p>
-                <label>
-                    <input type="radio" name="q3" value="a"> H2O
-                </label>
-                <label>
-                    <input type="radio" name="q3" value="b"> CO2
-                </label>
-                <label>
-                    <input type="radio" name="q3" value="c"> H2O2
-                </label>
-            </div>
-
-            <button type="submit" class="submit-btn">Enviar Respostas</button>
-        </form>
+        </div>
     </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
+
+    <script>
+        var app = new Vue({
+        el: '#app',
+        delimiters: ['[[', ']]'],
+        data() {
+          return {
+            category: "Matemática",
+            questions: [],
+            correctAnswers: 0, // Variável para armazenar o número de acertos
+            result: null, // Armazenar o resultado final
+          }
+        },
+        methods: {
+            getQuestions() {
+                if (!this.category) {
+                    alert("Escolha uma categoria!");
+                    return;
+                }
+
+                fetch(`/Home/api/get-quiz/?category=${encodeURIComponent(this.category)}`)
+                    .then(response => response.json())
+                    .then(result => {
+                        console.log("Resultado do quiz:", result);  // Exibe o resultado da API no console
+                        if (result && result.data) {
+                            this.questions = result.data;  // Atualiza as questões
+                            console.log("Questões:", this.questions);  // Verifique se 'questions' está sendo atualizado corretamente
+                        } else {
+                            console.error("Erro: Dados não encontrados na resposta da API.");
+                        }
+                    })
+                    .catch(error => {
+                        console.error("Erro no fetch:", error);
+                    });
+            },
+            
+            checkAnswer(event, uid) {
+                const question = this.questions.find(q => q.uid === uid);
+                const chosen = event.target.value;
+                if (!question) return;
+                const a = question.answers.find(ans => ans.answer === chosen);
+                // precisa usar Vue.set pra tornar isCorrect reativo
+                this.$set(question, 'isCorrect', !!(a && a.is_correct));
+            },
+
+
+            submitQuiz() {
+                this.correctAnswers = this.questions.reduce((sum, q) => sum + (q.isCorrect ? 1 : 0), 0);
+                this.result = this.correctAnswers;
+                }
+        },
+
+        created() {
+          this.getQuestions();
+          console.log('Page Loaded');
+        },
+      });
+    </script>
 
     <!-- Rodapé -->
     <footer class="footer">
@@ -85,3 +130,24 @@
 
 </body>
 </html>
+
+<style> 
+  /* Estilizando o botão */
+  .btn {
+    background-color: #4CAF50; /* Cor de fundo verde */
+    color: white; /* Texto branco */
+    padding: 7px 20px; /* Preenchimento interno */
+    border: none; /* Sem borda */
+    border-radius: 5px; /* Bordas arredondadas */
+    cursor: pointer; /* Cursor de pointer */
+    font-size: 14px; /* Tamanho da fonte */
+  }
+
+  .btn:hover {
+    background-color: #45a049; /* Cor de fundo quando o mouse passar por cima */
+  }
+
+  .btn:active {
+    background-color: #1e441f; /* Cor de fundo quando o botão é pressionado */
+  }
+</style>

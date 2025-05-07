@@ -1,7 +1,8 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from .models import *
 import random
 from django.http import HttpResponse, JsonResponse
+import traceback
 
 
 def index(request):
@@ -14,7 +15,10 @@ def matematica(request):
 
 
 def matematica6(request):
-    return render(request, 'Home/matematica/6matematica.html')
+    # valor default só pra testar
+    category = request.GET.get("category", "Matemática")
+    context = {'category': category, 'categories': Category.objects.all()}
+    return render(request, 'Home/matematica/6matematica.html', context)
 
 
 def matematica7(request):
@@ -88,34 +92,38 @@ def geografia8(request):
 def geografia9(request):
     return render(request, 'Home/geografia/9geografia.html')
 
-# {
-#   'status' : True
-#    'data' : [
-#        {
-#            },
-#    ]
-# }
-
 
 def get_quiz(request):
     try:
-        question_objs = list(Question.objects.all())
+        category_param = request.GET.get('category')
+        question_objs = Question.objects.all()
+
+        if category_param:
+            question_objs = question_objs.filter(
+                category__category_name__icontains=category_param)
+
+        question_list = list(question_objs)
         data = []
-        random.shuffle(question_objs)
+        random.shuffle(question_list)
 
-        for question_objs in question_objs:
-
+        for question in question_list:
             data.append({
-                "category": question_objs.category.category_name,
-                "question": question_objs.question,
-                "marks": question_objs.marks,
-                "answers": question_objs.get_answers()
+                "uid": question.uid,
+                "category": question.category.category_name,
+                "question": question.question,
+                "marks": question.marks,
+                "answers": question.get_answers()
             })
 
         payload = {'status': True, 'data': data}
-
         return JsonResponse(payload)
 
     except Exception as e:
-        print(e)
-    return HttpResponse("Somethig went Wrong")
+        import traceback
+        return HttpResponse(f"Erro interno: {traceback.format_exc()}")
+
+
+def quiz(request):
+    context = {'category': request.GET.get("category")}
+    category = request.GET.get("category")
+    return render(request, "quiz.html", {"category": category}, context)

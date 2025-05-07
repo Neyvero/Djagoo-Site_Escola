@@ -23,7 +23,7 @@ class Category(BaseModel):
 
 class Question(BaseModel):
     category = models.ForeignKey(
-        Category, related_name='categoy', on_delete=models.CASCADE)
+        Category, related_name='category', on_delete=models.CASCADE)
     question = models.CharField(max_length=100)
     marks = models.IntegerField(default=5)
 
@@ -31,23 +31,24 @@ class Question(BaseModel):
         return self.question
 
     def get_answers(self):
-        answer_objs = list(Anwser.objects.filter(question=self))
+        answer_objs = list(Answer.objects.filter(question=self))
         random.shuffle(answer_objs)
         data = []
 
-        for answer_obj in answer_objs:
+        for answer_obj in answer_objs:  # Itera sobre os objetos de resposta
             data.append({
-                'answer': answer_objs.answer,
-                'is_correct': answer_objs.is_correct
+                'answer': answer_obj.answer,  # Acessa o texto da resposta
+                # Acessa o atributo is_correct de cada objeto
+                'is_correct': answer_obj.is_correct
             })
         return data
 
 
-class Anwser(BaseModel):
+class Answer(BaseModel):
     question = models.ForeignKey(
         Question, related_name='question_answer', on_delete=models.CASCADE)
-    anwser = models.CharField(max_length=100)
+    answer = models.CharField(max_length=100)
     is_correct = models.BooleanField(default=False)
 
     def __str__(self) -> str:
-        return self.anwser
+        return self.answer
