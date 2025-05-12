@@ -24,7 +24,7 @@ class Category(BaseModel):
 class Question(BaseModel):
     category = models.ForeignKey(
         Category, related_name='category', on_delete=models.CASCADE)
-    question = models.CharField(max_length=100)
+    question = models.CharField(max_length=600)
     marks = models.IntegerField(default=5)
 
     def __str__(self) -> str:
@@ -47,7 +47,7 @@ class Question(BaseModel):
 class Answer(BaseModel):
     question = models.ForeignKey(
         Question, related_name='question_answer', on_delete=models.CASCADE)
-    answer = models.CharField(max_length=100)
+    answer = models.CharField(max_length=600)
     is_correct = models.BooleanField(default=False)
 
     def __str__(self) -> str:

@@ -26,7 +26,7 @@
     <!-- Caixa de Texto de Introdução -->
     <div class="container">
         <section class="main-content">
-            <h2>6° Ano</h2>
+            <h2>Matemática</h2>
         </section>
     </div>
       
@@ -34,7 +34,7 @@
     <div id="app">
         <div class="container mt-5 pt-5">
             <div class="col-mod-6 mx-auto">
-                <h3>Give quiz</h3>
+                <h3>Questionário 6° Ano</h3>
                 <div v-for="(question, qIdx) in questions" :key="question.uid">
                     <hr>
                     <p>[[ question.question ]]</p>  <!-- Exibe a pergunta -->
@@ -71,7 +71,7 @@
         delimiters: ['[[', ']]'],
         data() {
           return {
-            category: "Matemática",
+            category: "6Matemática",
             questions: [],
             correctAnswers: 0, // Variável para armazenar o número de acertos
             result: null, // Armazenar o resultado final
@@ -151,3 +151,8 @@
     background-color: #1e441f; /* Cor de fundo quando o botão é pressionado */
   }
 </style>
+<br>
+<br>
+<br>
+<br>
+

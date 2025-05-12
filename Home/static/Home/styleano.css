@@ -115,11 +115,21 @@ html, body {
   left: 0;
   bottom: 0;
   width: 100%;
+
+  /* força altura e remove padding */
+  height: 20px !important;
+  line-height: 20px !important;
+  padding: 0 !important;
+  
   background-color: #5ec541;
   color: white;
   text-align: center;
-  padding: 10px;
+
+  /* texto menor */
+  font-size: 12px !important;
 }
+
+
 
 /* Adicionando efeitos de transição para botões */
 button, .button {

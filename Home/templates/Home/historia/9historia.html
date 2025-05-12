@@ -26,8 +26,7 @@
     <!-- Caixa de Texto de Introdução -->
     <div class="container">
         <section class="main-content">
-            <h2>6° Ano</h2>
-            
+            <h2>História</h2>
         </section>
     </div>
       
@@ -35,36 +34,50 @@
     <div id="app">
         <div class="container mt-5 pt-5">
             <div class="col-mod-6 mx-auto">
-                <h3>Give quiz</h3>
-                <div v-for="(question, index) in questions" :key="index">
+                <h3>Questionário 9° Ano</h3>
+                <div v-for="(question, qIdx) in questions" :key="question.uid">
                     <hr>
                     <p>[[ question.question ]]</p>  <!-- Exibe a pergunta -->
-                    <div v-if="question.answers.length > 0" v-for="(answer, index) in question.answers" :key="index" class="form-check">
-                      <input @change="checkAnswer($event, question.uid)" :value="answer.answer" class="form-check-input" type="radio" :name="'question-' + question.id" :id="'answer-' + index">
-                      <label class="form-check-label" :for="'answer-' + index">
+                    <div v-for="(answer, aIdx) in question.answers" :key="aIdx" class="form-check">
+                      <input
+                      @change="checkAnswer($event, question.uid)"
+                      :value="answer.answer"
+                      class="form-check-input"
+                      type="radio"
+                      :name="'question-' + question.uid"            
+                      :id="'answer-' + question.uid + '-' + aIdx" 
+                    />
+                    <label
+                    class="form-check-label"
+                    :for="'answer-' + question.uid + '-' + aIdx"
+                    >
                         [[ answer.answer ]]
                       </label>
-
                     </div>
-                    <p v-else>Não há opções de resposta para esta questão.</p>  <!-- Mensagem para questões sem respostas -->
                     <hr>
-                  </div>
+                </div>
+                <!-- Botão para enviar e mostrar os acertos -->
+                <button class="btn" @click="submitQuiz">Enviar</button>
+                <p v-if="result !== null">Você acertou [[ result ]] de [[ questions.length ]] questões!</p> <!-- Exibe o resultado -->
             </div>
         </div>
     </div>
+
     <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
 
     <script>
-        var app = new Vue ({
+        var app = new Vue({
         el: '#app',
         delimiters: ['[[', ']]'],
         data() {
           return {
-            category: "Historia9",
-            questions : []
+            category: "9História",
+            questions: [],
+            correctAnswers: 0, // Variável para armazenar o número de acertos
+            result: null, // Armazenar o resultado final
           }
         },
-        methods :{
+        methods: {
             getQuestions() {
                 if (!this.category) {
                     alert("Escolha uma categoria!");
@@ -74,47 +87,38 @@
                 fetch(`/Home/api/get-quiz/?category=${encodeURIComponent(this.category)}`)
                     .then(response => response.json())
                     .then(result => {
-                    console.log("Resultado do quiz:", result);  // Exibe o resultado da API no console
-                    if (result && result.data) {
-                        this.questions = result.data;  // Atualiza as questões
-                        console.log("Questões:", this.questions);  // Verifique se 'questions' está sendo atualizado corretamente
-                    } else {
-                        console.error("Erro: Dados não encontrados na resposta da API.");
-                    }
+                        console.log("Resultado do quiz:", result);  // Exibe o resultado da API no console
+                        if (result && result.data) {
+                            this.questions = result.data;  // Atualiza as questões
+                            console.log("Questões:", this.questions);  // Verifique se 'questions' está sendo atualizado corretamente
+                        } else {
+                            console.error("Erro: Dados não encontrados na resposta da API.");
+                        }
                     })
-
                     .catch(error => {
-                    console.error("Erro no fetch:", error);
+                        console.error("Erro no fetch:", error);
                     });
-                },
-                checkAnswer(event, uid) {
+            },
+            
+            checkAnswer(event, uid) {
+                const question = this.questions.find(q => q.uid === uid);
+                const chosen = event.target.value;
+                if (!question) return;
+                const a = question.answers.find(ans => ans.answer === chosen);
+                // precisa usar Vue.set pra tornar isCorrect reativo
+                this.$set(question, 'isCorrect', !!(a && a.is_correct));
+            },
 
-                    const question = this.questions.find(q => q.uid === uid);
 
-                    if (question) {
-               
-                        question.answers.forEach(answer => {
-                       
-                            if (answer.answer === event.target.value) {
-                                if (answer.is_correct) {
-                                    console.log('Your answer is correct');
-                                    alert("Sua resposta está correta!");
-                                } else {
-                                    console.log('Your answer is wrong');
-                                    alert("Sua resposta está errada!");
-                                }
-                            }
-                        });
-                    }
-                    console.log(event.target.value, uid); 
+            submitQuiz() {
+                this.correctAnswers = this.questions.reduce((sum, q) => sum + (q.isCorrect ? 1 : 0), 0);
+                this.result = this.correctAnswers;
                 }
-
         },
 
-
         created() {
-          this.getQuestions()
-          console.log('Page Loaded')
+          this.getQuestions();
+          console.log('Page Loaded');
         },
       });
     </script>
@@ -126,3 +130,29 @@
 
 </body>
 </html>
+
+<style> 
+  /* Estilizando o botão */
+  .btn {
+    background-color: #4CAF50; /* Cor de fundo verde */
+    color: white; /* Texto branco */
+    padding: 7px 20px; /* Preenchimento interno */
+    border: none; /* Sem borda */
+    border-radius: 5px; /* Bordas arredondadas */
+    cursor: pointer; /* Cursor de pointer */
+    font-size: 14px; /* Tamanho da fonte */
+  }
+
+  .btn:hover {
+    background-color: #45a049; /* Cor de fundo quando o mouse passar por cima */
+  }
+
+  .btn:active {
+    background-color: #1e441f; /* Cor de fundo quando o botão é pressionado */
+  }
+</style>
+<br>
+<br>
+<br>
+<br>
+
