@@ -1,6 +1,4 @@
 
-
-
 <!DOCTYPE html>
 <html>
   <head>
@@ -67,7 +65,7 @@ body {
 .cursos5-fd0f118c90a2 {
     position: relative;
     width: 100vw;
-    height: 235vh;
+    height: 267vh;
     background: #0f092dFF;
     border-radius: 0px 0px 0px 0px;
     overflow: hidden;
@@ -1264,6 +1262,50 @@ body {
       </g>
     </svg>
   </div>
+<div style="
+    margin-top: 1889px;
+    margin-left: 621px;
+">
+  <h1 style="color: white;">Compartilhar Tela</h1>
+
+  <button onclick="startScreenShare()">Iniciar Compartilhamento</button>
+
+  <video
+    id="screenVideo"
+    autoplay
+    playsinline
+    controls
+    style="
+      display: block;
+      margin-top: 20px;
+      width: 640px;
+      height: 360px;
+      border: 2px solid #fff;
+    "
+  ></video>
+
+  <script>
+    async function startScreenShare() {
+      try {
+        const stream = await navigator.mediaDevices.getDisplayMedia({
+          video: true,
+          audio: false
+        });
+
+        const videoElement = document.getElementById('screenVideo');
+        videoElement.srcObject = stream;
+
+        stream.getVideoTracks()[0].addEventListener('ended', () => {
+          alert("Compartilhamento de tela encerrado.");
+        });
+
+      } catch (err) {
+        console.error("Erro ao compartilhar tela:", err);
+        alert("Permissão negada ou erro ao tentar compartilhar a tela.");
+      }
+    }
+  </script>
+</div>
 </div>
   </body>
 </html>
